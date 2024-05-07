@@ -1,0 +1,32 @@
+[project]
+name = "binarysearchfile"
+dynamic = ["version"]
+authors = [
+    {name = "Tom Eulenfeld"},
+]
+description = "Binary search binary file for fast random access"
+readme = "README.md"
+license = {text = "MIT License"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+keywords = [
+    "binary search", "random access", "direct access"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/trichter/binarysearchfile"
+"Bug Tracker" = "https://github.com/trichter/binarysearchfile/issues"
+
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = ["binarysearchfile"]
+
+[tool.setuptools.dynamic]
+version = {attr = "binarysearchfile.__version__"}
