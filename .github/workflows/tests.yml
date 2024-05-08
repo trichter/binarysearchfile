@@ -49,4 +49,7 @@ jobs:
           mkdir empty; cd empty
           pytest --cov binarysearchfile --cov-report=xml:$PWD/coverage.xml ../test_binarysearchfile.py
       - name: upload coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} # required
+          fail_ci_if_error: true
