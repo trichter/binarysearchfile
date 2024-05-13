@@ -1,11 +1,10 @@
 [project]
 name = "binarysearchfile"
-dynamic = ["version"]
+dynamic = ["readme", "version"]
 authors = [
     {name = "Tom Eulenfeld"},
 ]
 description = "Binary search binary file for fast random access"
-readme = "README.md"
 license = {text = "MIT License"}
 classifiers = [
     "Programming Language :: Python :: 3",
