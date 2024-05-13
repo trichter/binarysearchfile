@@ -26,7 +26,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-py-modules = ["binarysearchfile"]
+py-modules = ["binarysearchfile", "binarysearchfile_tests"]
 
 [tool.setuptools.dynamic]
 version = {attr = "binarysearchfile.__version__"}
