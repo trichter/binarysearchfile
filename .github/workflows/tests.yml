@@ -14,16 +14,12 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         python: ["3.11", "3.12"]
-        options: [""]
         include:
           - os: macos-latest
             python: "3.12"
           - os: ubuntu-latest
             python: "3.12"
             options: full
-          - os: ubuntu-latest
-            python: "3.12"
-            options: warnings full            
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -47,7 +43,7 @@ jobs:
       - name: run test suite
         run: |
           mkdir empty; cd empty
-          pytest --cov binarysearchfile --cov-report=xml:$PWD/coverage.xml ../test_binarysearchfile.py
+          pytest --cov binarysearchfile --cov binarysearchfile_tests --cov-report=xml:$PWD/coverage.xml ../binarysearchfile_tests.py
       - name: upload coverage
         uses: codecov/codecov-action@v4
         with:
