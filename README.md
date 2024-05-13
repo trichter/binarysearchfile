@@ -3,7 +3,7 @@
 [![codecov](https://codecov.io/gh/trichter/binarysearchfile/branch/master/graph/badge.svg)](https://codecov.io/gh/trichter/binarysearchfile)
 [![pypi version](https://img.shields.io/pypi/v/binarysearchfile.svg)](https://pypi.python.org/pypi/binarysearchfile)
 [![python version](https://img.shields.io/pypi/pyversions/binarysearchfile.svg)](https://python.org)
-[![DOI](https://zenodo.org/badge/DOI/)](https://doi.org/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.11184031.svg)](https://doi.org/10.5281/zenodo.11184031)
 
 Binary search sorted binary file for fast random access
 
