@@ -32,7 +32,7 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: install dependencies
         run: |
-          conda install -y pytest pytest-cov
+          conda install -y coverage
       - name: print conda environment info
         run: |
           conda info -a
@@ -43,7 +43,9 @@ jobs:
       - name: run test suite
         run: |
           mkdir empty; cd empty
-          pytest --cov binarysearchfile --cov binarysearchfile_tests --cov-report=xml:$PWD/coverage.xml ../binarysearchfile_tests.py
+          coverage run --source binarysearchfile,binarysearchfile_tests -m binarysearchfile_tests
+          coverage report
+          coverage xml -o coverage.xml
       - name: upload coverage
         uses: codecov/codecov-action@v4
         with:

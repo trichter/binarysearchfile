@@ -28,7 +28,7 @@ import os.path
 from warnings import warn
 
 
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 
 
 def _rint(f, l):
@@ -61,16 +61,19 @@ def _byte_length(v):
 
 DTypeDef = namedtuple('DType', ['name', 'len', 'encode', 'decode'])
 DTYPE = {
-    0: DTypeDef('ascii', len,
+     0: DTypeDef('byte_ljust', len,
+                 encode=lambda v, s: v.ljust(s, b' '),
+                 decode=lambda v: v.rstrip(b' ')),
+    10: DTypeDef('ascii_ljust', len,
                 encode=lambda v, s: v.encode('latin1').ljust(s, b' '),
                 decode=lambda v: v.rstrip(b' ').decode('latin1')),
-    1: DTypeDef('utf-8', lambda v: len(v.encode('utf-8')),
+    20: DTypeDef('utf-8_ljust', lambda v: len(v.encode('utf-8')),
                 encode=lambda v, s: v.encode('utf-8').ljust(s, b' '),
                 decode=lambda v: v.rstrip(b' ').decode('utf-8')),
-    10: DTypeDef('int', _byte_length,
+    50: DTypeDef('int', _byte_length,
                  encode=lambda v, s: v.to_bytes(s),
                  decode=lambda v: int.from_bytes(v)),
-    11: DTypeDef('signedint', lambda v: _byte_length(2 * abs(v)),
+    51: DTypeDef('signedint', lambda v: _byte_length(2 * abs(v)),
                  encode=lambda v, s: v.to_bytes(s, signed=True),
                  decode=lambda v: int.from_bytes(v, signed=True))
 }
@@ -106,7 +109,7 @@ class BinarySearchFile():
     #   2B offset to metadata
     #   2B offset to data
     headerstart = b'BinarySearchFile'
-    record = (0, 10)
+    record = (10, 50)
 
     def __init__(self, fname):
         self.f = None
@@ -183,9 +186,8 @@ class BinarySearchFile():
         """Get record i or the next record"""
         if i is not None:
             self.f.seek(self.attr.dataoffset + i * self.attr.recsize)
-        data = tuple(self.DTYPE[record].decode(self.f.read(size))
+        return tuple(self.DTYPE[record].decode(self.f.read(size))
                      for record, size in zip(self.record, self.size))
-        return data
 
     def search(self, key, first=True):
         """Search for key and return the record number
@@ -247,17 +249,28 @@ class BinarySearchFile():
 
             f.write(len(self.record).to_bytes(2))
             size = []
-            for i, d in enumerate(zip(*sorted(data))):
-                num = self.record[i]
-                len_ = self.DTYPE[num].len
-                if isinstance(len_, int):
-                    s = len_
-                else:
-                    s = max(len_(d1) for d1 in d)
-                size.append(s)
-                f.write(num.to_bytes(1))
-                f.write(s.to_bytes(2))
-
+            if len(data) == 0:
+                for i in range(len(self.record)):
+                    num = self.record[i]
+                    len_ = self.DTYPE[num].len
+                    if isinstance(len_, int):
+                        s = len_
+                    else:
+                        s = 0
+                    size.append(s)
+                    f.write(num.to_bytes(1))
+                    f.write(s.to_bytes(2))
+            else:
+                for i, d in enumerate(zip(*sorted(data))):
+                    num = self.record[i]
+                    len_ = self.DTYPE[num].len
+                    if isinstance(len_, int):
+                        s = len_
+                    else:
+                        s = max(len_(d1) for d1 in d)
+                    size.append(s)
+                    f.write(num.to_bytes(1))
+                    f.write(s.to_bytes(2))
             dataoffset = f.tell()
             f.seek(len(self.magic))
             f.write(metaoffset.to_bytes(2))
@@ -302,7 +315,7 @@ class BinarySequentialFile():
 
     magic = b'\xfe\xfe\x01\x01'
     headerstart = b'BinarySequentialFile'
-    record = (0, 10)
+    record = (10, 50)
     size = (20, 2)
 
     def __init__(self, fname, header=b''):
@@ -398,9 +411,8 @@ class BinarySequentialFile():
     def _get_data(self, i=None):
         if i is not None:
             self.f.seek(self.attr.dataoffset + i * self.attr.recsize)
-        data = tuple(self.DTYPE[record].decode(self.f.read(size))
+        return tuple(self.DTYPE[record].decode(self.f.read(size))
                      for record, size in zip(self.record, self.size))
-        return data
 
     def __getitem__(self, item):
         return self.read(item)

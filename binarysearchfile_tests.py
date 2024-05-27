@@ -47,7 +47,7 @@ class BinarySearchFileTestCase(unittest.TestCase):
         class MyBinarySearchFile(BinarySearchFile):
             magic = b'\xfe\xff\x01\x01'
             headerstart = b'MyBinarySearchFile'
-            record = (10, 10)
+            record = (50, 50)
         with TemporaryDirectory() as tmpdir:
             path = join(tmpdir, 'test.bsf')
             bsf = MyBinarySearchFile(path)
@@ -59,7 +59,7 @@ class BinarySearchFileTestCase(unittest.TestCase):
 
     def test_inttypes(self):
         class MyBinarySearchFile(BinarySearchFile):
-            record = (10, 11, 10)
+            record = (50, 51, 50)
         data = list(zip(range(256), list(range(-127, 128)) + [127], [0] * 256))
         with TemporaryDirectory() as tmpdir:
             path = join(tmpdir, 'test.bsf')
@@ -78,6 +78,9 @@ class BinarySearchFileTestCase(unittest.TestCase):
             self.assertEqual(bsf.read(), data)
             self.assertEqual(bsf.attr.recsize, 4)
             self.assertEqual(bsf.size, [2, 2, 0])
+            self.assertEqual(len(bsf), len(data))
+            bsf.write([])
+            self.assertEqual(len(bsf), 0)
 
     def test_newtypes(self):
         class MyBinarySearchFile(BinarySearchFile):

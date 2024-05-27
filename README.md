@@ -17,7 +17,7 @@ from binarysearchfile import BinarySearchFile
 class MyBinarySearchFile(BinarySearchFile):
     magic = b'\xfe\xff\x01\x01'  # magic string, you can change 2nd and 4th byte
     headerstart = b'MyBinarySearchFile'  # name of the file format
-    record = (10, 10)  # record structure, here two ints, first field can be searched binarily
+    record = (50, 50)  # record structure, here two ints, first field can be searched binarily
 
 bsf = MyBinarySearchFile('mybinarysearchfile')
 data = [(10, 42), (4, 10), (5, 5)]
@@ -43,15 +43,16 @@ The first element ("key") in the record can be searched binarily.
 Currently, the following types can be used out of the box:
 
 ```
-0: ascii
-1: utf-8
-10: int
-11: signedint
+0: binary adding whitepace
+10: ascii adding whitespace
+20: utf-8 adding whitespace
+50: int
+51: signedint
 ```
 
 The file can be read by the original class:
 
-```
+```py
 bsf = BinarySearchFile('mybinarysearchfile')
 print(bsf.get(10))
 
@@ -69,7 +70,7 @@ Its init method takes arguments `name`, `len`, `encode` and `decode`.
 `len`, the byte length of an object, is usually a function of the object, but can be an integer for a fixed length.
 Register custom types only with keys greater than 99.
 
-```
+```py
 from binarysearchfile import BinarySearchFile, DTypeDef
 
 class MyBinarySearchFile(BinarySearchFile):
@@ -86,10 +87,11 @@ class MyBinarySearchFile(BinarySearchFile):
 
 We provide a `BinarySequentialFile` class that uses the same file layout and can be used for sequential reading and writing.
 
-```
+```py
 from binarysearchfile import BinarySequentialFile
 with BinarySequentialFile('mybinarysearchfile') as bseqf:
     print(bseqf[2])
+
 #Output:
 #(10, 42)
 ```
